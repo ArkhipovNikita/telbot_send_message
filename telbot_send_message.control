@@ -1,0 +1,4 @@
+comment = 'send message to a telegram bot'
+default_version = '0.0.1'
+module_pathname = '$libdir/telbot_send_message'
+relocatable = false
