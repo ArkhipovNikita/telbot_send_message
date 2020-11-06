@@ -25,7 +25,7 @@ Datum telbot_send_message(PG_FUNCTION_ARGS) {
         sprintf(url, "https://api.telegram.org/bot%s/sendMessage", VARDATA(token));
         curl_easy_setopt(curl, CURLOPT_URL, url);
         char* parametrs = (char*)malloc(VARSIZE(message) * sizeof(char));
-        sprintf(parametrs, "chat_id=%d&text=%s", chatId, VARDATA(message));
+        sprintf(parametrs, "chat_id=%d&text=%s", chatId, curl_easy_escape(curl, VARDATA(message), VARSIZE(message)));
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, parametrs);
 
 
