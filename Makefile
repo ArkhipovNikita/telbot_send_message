@@ -1,10 +1,10 @@
-EXTENSION = telbot_send_message
-MODULE_big = telbot_send_message
+EXTENSION = telbot
+MODULE_big = telbot
 
 CURL_CONFIG = curl-config
 PG_CONFIG = pg_config
-DATA = telbot_send_message--0.0.1.sql
-OBJS = telbot_send_message.o
+DATA = telbot--0.0.1.sql
+OBJS = telbot.o
 
 CFLAGS += $(shell $(CURL_CONFIG) --cflags)
 LIBS += $(shell $(CURL_CONFIG) --libs)
