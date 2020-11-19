@@ -34,9 +34,23 @@ CREATE FUNCTION telbot.set_token(param varchar(100)) RETURNS void
     AS $$ SELECT telbot.set_param('token', param) $$
     LANGUAGE SQL;
 
-CREATE FUNCTION telbot.send_message(chat_id varchar(50), token text, message text) RETURNS BOOLEAN
+CREATE FUNCTION telbot.send_message_c(chat_id varchar(50), token text, message text) RETURNS BOOLEAN
     AS 'MODULE_PATHNAME', 'send_message'
     LANGUAGE C STRICT;
+
+CREATE FUNCTION telbot.send_message(chat_id varchar(50), token text, message text) RETURNS BOOLEAN AS 
+$$
+    DECLARE 
+        passed BOOLEAN;
+    BEGIN
+        SELECT telbot.send_message_c(chat_id, token, message) INTO passed;
+        IF passed THEN
+            INSERT INTO telbot.sent_messages (datetime, message) VALUES (now(), message);
+        END IF;
+        RETURN passed;
+    END;
+$$ 
+LANGUAGE plpgsql;
 
 CREATE FUNCTION telbot.send_message_confd(message text) RETURNS BOOLEAN AS 
 $$
@@ -51,9 +65,6 @@ $$
             RAISE EXCEPTION 'Not all parametrs are configured';
         END IF;
         SELECT telbot.send_message(chat_id, token, message) INTO passed;
-        IF passed THEN
-            INSERT INTO telbot.sent_messages (datetime, message) VALUES (now(), message);
-        END IF;
         RETURN passed;
     END;
 $$ 
